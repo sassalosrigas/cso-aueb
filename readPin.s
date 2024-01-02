@@ -23,7 +23,7 @@ readNext:
     bge $t1,10,exitread     # if i >= 10 the execution of the function ends   
 
 #-----------------this is only executed if i < 10 -------------------
-    lb $t3,($t0)    # $t3 is next int from pin
+    lw $t3,($t0)    # $t3 is next int from pin
 
     la $a0,text1
     li $v0,4
