@@ -65,3 +65,4 @@ text1:   .asciiz "Position "
 text2:  .asciiz " : \n"
 pin:    .space 40 # initialization of an array with 10 elements
 in:     .space 4
+i:     .space 4
