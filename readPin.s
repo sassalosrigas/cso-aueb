@@ -27,7 +27,7 @@ readNext:
 
     la $a0,text1
     li $v0,4
-    syscall     # prints "Postition "
+    syscall     # prints "Position "
 
     lw $t1,i
     lw $a0,i
