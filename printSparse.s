@@ -9,6 +9,7 @@
     i: .word 0
     str1: .asciiz "Position: "
     str2: .asciiz " Value: "
+    str3: .asciiz "\n"
 #----------------------------------------------------------------------------------------------------------
 .text
 main:
@@ -28,10 +29,9 @@ printSparse:
     loop:
         bge $t0, $a1, exit  # if i >= mikos, exit loop
 
-        lw $t1, 0($a0)      # load value of sparse[i]
-        lw $t2, 4($a0)      # load value of sparse[i+1]
 
         li $v0, 4
+        li $v0, 4           # print "Position: "
         la $a0, str1
         syscall
 
@@ -40,12 +40,19 @@ printSparse:
         syscall
 
         li $v0, 4
+        li $v0, 4           # print " Value: "
         la $a0, str2
         syscall
 
         li $v0, 1           # print value of sparse[i+1]
         move $a0, $t2
         syscall
+
+        li $v0, 4           # print "\n"
+        la $a0, str3
+        syscall
+    
+        addi $t0, $t0, 2    # i = i + 2
 
         j loop
 
