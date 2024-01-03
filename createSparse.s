@@ -11,6 +11,7 @@ main:
     la $a0, pin       # loading the address of pin to $a0
     la $a1, sparse    # loading the address of sparse to $a1
     jal createSparse  # calling the subprogram
+    move $a2, v0
 
 #>ExitProgram----------------------------------------------------------------------------------------------
 li $v0, 10
