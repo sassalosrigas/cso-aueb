@@ -29,8 +29,9 @@ printSparse:
     loop:
         bge $t0, $a1, exit  # if i >= mikos, exit loop
 
+        lw $t1, 0($a0)      # t1 = sparse[i]
+        lw $t2, 4($a0)      # t2 = sparse[i+1]
 
-        li $v0, 4
         li $v0, 4           # print "Position: "
         la $a0, str1
         syscall
@@ -39,7 +40,6 @@ printSparse:
         move $a0, $t1
         syscall
 
-        li $v0, 4
         li $v0, 4           # print " Value: "
         la $a0, str2
         syscall
@@ -53,6 +53,7 @@ printSparse:
         syscall
     
         addi $t0, $t0, 2    # i = i + 2
+        addi $a0, $a0, 8    # sparse = sparse + 8
 
         j loop
 
