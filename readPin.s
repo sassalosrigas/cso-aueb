@@ -23,11 +23,11 @@ readNext:
     bge $t1,10,exitread     # if i >= 10 the execution of the function ends   
 
 #-----------------this is only executed if i < 10 -------------------
-    lb $t3,($t0)    # $t3 is next int from pin
+    lw $t3,($t0)    # $t3 is next int from pin
 
     la $a0,text1
     li $v0,4
-    syscall     # prints "Postition "
+    syscall     # prints "Position "
 
     lw $t1,i
     lw $a0,i
@@ -65,3 +65,4 @@ text1:   .asciiz "Position "
 text2:  .asciiz " : \n"
 pin:    .space 40 # initialization of an array with 10 elements
 in:     .space 4
+i:     .space 4
