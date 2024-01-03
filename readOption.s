@@ -64,9 +64,6 @@ readOption:
 
     sw $v0,Answer   # int Answer = in.nextInt();
 
-    li $t0,Answer
-    move $v0,$t0    # $v0 = Answer
-
     jr $ra  #return Answer
 
     .data
