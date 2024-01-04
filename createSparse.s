@@ -1,3 +1,7 @@
+# file name: createSparse.s
+# authors: Anais Farhat (3220280)
+#          Alexandra Tsitsopoulou (3220216)
+#          Rigas Sassalos (3220178)
 #----------------------------------------------------------------------------------------------------------
 .data
 pin: .word 0, 0, 0, 0, 0, 8, 0, 0, 0, -3

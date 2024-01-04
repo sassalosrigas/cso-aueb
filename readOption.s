@@ -1,3 +1,8 @@
+# file name: readOption.s
+# authors: Anais Farhat (3220280)
+#          Alexandra Tsitsopoulou (3220216)
+#          Rigas Sassalos (3220178)
+#----------------------------------------------------------------------------------------------------------
     .text
     .globl main
 
