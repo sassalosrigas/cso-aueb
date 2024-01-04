@@ -4,8 +4,8 @@
 #          Rigas Sassalos (3220178)
 #----------------------------------------------------------------------------------------------------------
 .data
-    sparse: .word 5, 8, 9, -3
-    mikos: .word 4
+    sparse: .space 40
+    mikos: .space 4
     i: .word 0
     str1: .asciiz "Position: "
     str2: .asciiz " Value: "
@@ -24,20 +24,21 @@ main:
 
 # subprogram
 printSparse:
-    lw $t0, i       # i = 0
+    lw $t0, i               # i = 0
+    move $t1, $a0           # t1 = sparse
 
     loop:
         bge $t0, $a1, exit  # if i >= mikos, exit loop
 
-        lw $t1, 0($a0)      # t1 = sparse[i]
-        lw $t2, 4($a0)      # t2 = sparse[i+1]
+        lw $t2, ($t1)       # t0 = sparse[i]
+        lw $t3, 4($t1)      # t2 = sparse[i+1]
 
         li $v0, 4           # print "Position: "
         la $a0, str1
         syscall
 
         li $v0, 1           # print value of sparse[i]
-        move $a0, $t1
+        move $a0, $t2
         syscall
 
         li $v0, 4           # print " Value: "
@@ -45,15 +46,15 @@ printSparse:
         syscall
 
         li $v0, 1           # print value of sparse[i+1]
-        move $a0, $t2
+        move $a0, $t3
         syscall
 
         li $v0, 4           # print "\n"
         la $a0, str3
         syscall
-    
+
+        addi $t1, $t1, 8    # t1 = t1 + 8
         addi $t0, $t0, 2    # i = i + 2
-        addi $a0, $a0, 8    # sparse = sparse + 8
 
         j loop
 
