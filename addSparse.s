@@ -35,12 +35,31 @@ addSparse:
     lw $t1, b
     lw $t2, c
     lw $t3, 16($sp)
+    
 
     loop:
     # malakies
-        or $t4, $t0, $t1
-        bge $t0, $a3, exit
-        bge $t1, $t3, exit
+        # or $t4, $t0, $t1 idk ti einai ayto -anais
+        bge $t0, $a3, exit       # a>=mikosA
+            bge $t1, $t3, exit   # b>=mikosB
+                lw $t4, ($a0)
+                lw $t5, ($a1)
+                bgt $t4, $t5, else_if     # sparseA>sparseB
+                
+                
+            else_if:
+                bgt $t5, $t4, else        # sparseA<sparseB
+
+                
+            else:
+
+            
+
+
+
+    exit:
+
+        
 
 
     
