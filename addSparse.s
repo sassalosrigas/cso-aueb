@@ -38,8 +38,6 @@ addSparse:
     
 
     loop:
-    # malakies
-        # or $t4, $t0, $t1 <--idk ti einai ayto p egrapses edw rhga -anais
         bge $t0, $a3, exit1       # a>=mikosA
             bge $t1, $t3, exit1   # b>=mikosB
                 lw $t4, ($a0)
