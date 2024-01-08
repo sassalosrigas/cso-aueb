@@ -10,12 +10,13 @@
     mikosA: .space 4
     mikosB: .space 4
     a: .space 4
-    b: .space 4
+    bb: .space 4
     c: .space 4
 #----------------------------------------------------------------------------------------------------------
 .text
 main:
-    li $a0, mikosB
+    lw $t9, mikosB
+    move $a0, $t9
     sw $a0, 16($sp)
     la $a0, sparseA
     la $a1, sparseB
@@ -32,7 +33,7 @@ main:
 # subprogram
 addSparse:
     lw $t0, a
-    lw $t1, b
+    lw $t1, bb
     lw $t2, c
     lw $t3, 16($sp)
     
@@ -84,27 +85,30 @@ addSparse:
                 j loop
 
     exit1:
+  
         loopA:
+            
             bge $t0, $a3, exit2
                 lw $t4, ($a0)         # load sparseA[a]
                 sw $t4, ($a2)         # sparseC[c++]=SparseA[a++]
                 add $t0, $t0, 1       # a++
                 add $t2, $t2, 1       # c++;
-                sw $t6, ($a2)
-                lw $t4, ($a0)         # load sparseA[a]
+            
+                lw $t4, ($a0)         # load next sparseA[a]
                 sw $t4, ($a2)         # sparseC[c++]=SparseA[a++]
                 add $t0, $t0, 1       # a++
                 add $t2, $t2, 1       # c++;
+    
                 j loopA 
                 
     exit2:
         loopB:
-            bge $t1, t3$, end
+            bge $t1, $t3, end
                 lw $t5, ($a1)         # load sparseB[b]
                 sw $t5, ($a2)         # sparseC[c++]=SparseB[b++]
                 add $t2, $t2, 1       # c++;
                 add $t1, $t1, 1       # b++;
-                sw $t6, ($a2)
+
                 lw $t5, ($a1)         # load sparseB[b]
                 sw $t5, ($a2)         # sparseC[c++]=SparseB[b++]
                 add $t2, $t2, 1       # c++;
@@ -112,10 +116,7 @@ addSparse:
                 j loopB     
              
     end:
-        sw $t2,c
         move $v0, $t2
         jr $ra
 
-        
-
-
+    
