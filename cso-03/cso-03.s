@@ -12,7 +12,7 @@
     choice:     .asciiz "\nChoice? "
     Answer:     .space 4
 
-    pin: .word 0, 0, 0, 0, 0, 8, 0, 0, 0, -3
+    pin: .space 40
     sparseA: .space 40
     sparseB: .space 40
     sparseC: .space 40
@@ -22,7 +22,6 @@
     bb: .space 4
     c: .space 4
 
-    test:   .asciiz "Test"
     text1:   .asciiz "Position "
     text2:  .asciiz " : \n"
     in:     .space 4
@@ -82,12 +81,9 @@ switch_case:
     j main
 
 read_array:
-    la $a0, test
-    li $v0, 4
-    syscall
 
     la $a0,pin
-    j readPin
+    jal readPin
 
 create_sparse:
     la $a0, pin
@@ -182,7 +178,7 @@ readOption:
 
 readPin:    
 
-    la $t0,pin  # $t0 is base register of given pin
+    move $t0,$a0  # $t0 is base register of given pin
     
     li $t1,0
     sw $t1,i    # i = 0
@@ -216,6 +212,8 @@ readNext:
     lw $t2, in
     sb $t2,($t3)    # pin[i] = in.nextInt();
 
+    move $a0,$t0
+
     add $t1,$t1,1
     sw $t1,i    # i ++
 
@@ -224,7 +222,7 @@ readNext:
 #--------------this is executed if i >= 10---------------
 exitread:
 
-    move $v0,pin
+    move $v0,$t0
     jr $ra
 
 #-----------------------------------------------------------------------------------
