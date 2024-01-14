@@ -213,7 +213,7 @@ readNext:
 
     sw $v0, in   # in = nextInt()
 
-    li $t2, in
+    lw $t2, in
     sb $t2,($t3)    # pin[i] = in.nextInt();
 
     add $t1,$t1,1
