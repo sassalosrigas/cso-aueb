@@ -12,7 +12,6 @@
     choice:     .asciiz "\nChoice? "
     Answer:     .space 4
 
-.data
     pin: .word 0, 0, 0, 0, 0, 8, 0, 0, 0, -3
     sparseA: .space 40
     sparseB: .space 40
@@ -23,7 +22,6 @@
     bb: .space 4
     c: .space 4
 
-.data
     test:   .asciiz "Test"
     text1:   .asciiz "Position "
     text2:  .asciiz " : \n"
