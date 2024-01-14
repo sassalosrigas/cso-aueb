@@ -178,7 +178,7 @@ readOption:
 
 readPin:    
 
-    move $t0,$a0  # $t0 is base register of given pin
+    la $t0,pin  # $t0 is base register of given pin
     
     li $t1,0
     sw $t1,i    # i = 0
@@ -212,8 +212,6 @@ readNext:
     lw $t2, in
     sb $t2,($t3)    # pin[i] = in.nextInt();
 
-    move $a0,$t0
-
     add $t1,$t1,1
     sw $t1,i    # i ++
 
@@ -222,7 +220,7 @@ readNext:
 #--------------this is executed if i >= 10---------------
 exitread:
 
-    move $v0,$t0
+    move $v0,pin
     jr $ra
 
 #-----------------------------------------------------------------------------------
