@@ -15,18 +15,18 @@
 #----------------------------------------------------------------------------------------------------------
 .text
 main:
-    la $a0, sparseA
-    la $a1, sparseB
-    la $a2, sparseC
-    la $a3, mikosA
+    la $a0,SparseA  # addSparse(SparseA,mikosA,SparseB,mikosB,SparseC)
+    la $a1,SparseB
+    la $a2,SparseC
+    lw $a3,mikosA
+    lw $t4,mikosB
+    sub $sp,$sp,4
+    sw $t4,0($sp)
     jal addSparse
-    move $a0,$v0
-    # exit program
-    li $v0, 10
-    syscall
 
 # subprogram
 addSparse:
+
     sub $sp, $sp, 4
     sw $a0, 0($sp)
     lw $s4,0($sp)
@@ -138,5 +138,3 @@ addSparse:
         add $sp, $sp, 4
         move $v0, $t2
         jr $ra
-
-    
