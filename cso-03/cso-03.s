@@ -213,9 +213,9 @@ readNext:
     li $v0,5
     syscall     # reads value from user
 
-    sw $v0,in   # in = nextInt()
+    sw $v0, in   # in = nextInt()
 
-    li $t2,in
+    li $t2, in
     sb $t2,($t3)    # pin[i] = in.nextInt();
 
     add $t1,$t1,1
@@ -256,92 +256,117 @@ createSparse:
         jr $ra
 
 #-----------------------------------------------------------------------------------
-
 addSparse:
-    lw $t0, a
-    lw $t1, bb
-    lw $t2, c
-    lw $t3, 16($sp)
+
+    sub $sp, $sp, 4
+    sw $a0, 0($sp)
+    lw $s4,0($sp)
+    move $s0, $a0 # sparseA
+    move $s1, $a1 # sparseB
+    move $s2, $a2 # sparseC
+    move $s3, $a3 # mikos a
     
+    li $t0, 0 # a=0
+    li $t1, 0 # b=0
+    li $t2, 0 # c=0
 
     loop:
-        bge $t0, $a3, exit1       # a>=mikosA
-            bge $t1, $t3, exit1   # b>=mikosB
-                lw $t4, ($a0)
-                lw $t5, ($a1)
-                lw $t6, ($a2)
-                sw $t6, ($a2)
-                bgt $t4, $t5, else_if     # sparseA>sparseB
-                    lw $t4, ($a0)         # load sparseA[a]
-                    sw $t4, ($a2)         # sparseC[c++]=SparseA[a++]
-                    add $t0, $t0, 1       # a++
-                    add $t2, $t2, 1       # c++;
-                    sw $t6, ($a2)
-                    lw $t4, ($a0)         # load sparseA[a]
-                    sw $t4, ($a2)         # sparseC[c++]=SparseA[a++]
-                    add $t0, $t0, 1       # a++
-                    add $t2, $t2, 1       # c++;
-                    j loop 
-            else_if:
-                bgt $t5, $t4, else        # sparseA<sparseB
-                    lw $t5, ($a1)         # load sparseB[b]
-                    sw $t5, ($a2)         # sparseC[c++]=SparseB[b++]
-                    add $t2, $t2, 1       # c++;
-                    add $t1, $t1, 1       # b++;
-                    sw $t6, ($a2)
-                    lw $t5, ($a1)         # load sparseB[b]
-                    sw $t5, ($a2)         # sparseC[c++]=SparseB[b++]
-                    add $t2, $t2, 1       # c++;
-                    add $t1, $t1, 1       # b++;
-                    j loop 
-                
-            else:
-                lw $t4, ($a0)             # load sparseA[a]
-                sw $t4, ($a2)             # sparseC[c++]=SparseA[a++]
-                add $t0, $t0, 1           # a++;
-                add $t2, $t2, 1           # c++;
-                lw $t4, ($a0)             # load sparseA[a]
-                lw $t5, ($a1)             # load sparseB[b]
-                add $t6, $t4, $t5         # sparseC[c++]=SparseA[a++]+SparseB[b++]
-                sw $t6, ($a2)
-                       
-                add $t0, $t0, 1           # a++;
-                add $t1, $t1, 1           # b++;
-                add $t2, $t2, 1           # c++;
-                j loop
+        bge $t0, $a3, loopA       # a>=mikosA
+        bge $t1, $t3, loopA   # b>=mikosB
+        lw $t4, 0($s0)    # sparseA[i]
+        lw $t5, 0($s1)    # sparseB[i]
+        bgt $t4, $t5, else_if     # sparseA>sparseB
+        sw $t4, 0($s2)        # sparseC[c++]=SparseA[a++]
+        add $t0, $t0, 1       # a++
+        add $t2, $t2, 1       # c++;
+        
+        add $s2, $s2, 4
+        add $s0, $s0, 4
 
-    exit1:
-  
-        loopA:
-            
-            bge $t0, $a3, exit2
-                lw $t4, ($a0)         # load sparseA[a]
-                sw $t4, ($a2)         # sparseC[c++]=SparseA[a++]
-                add $t0, $t0, 1       # a++
-                add $t2, $t2, 1       # c++;
-            
-                lw $t4, ($a0)         # load next sparseA[a]
-                sw $t4, ($a2)         # sparseC[c++]=SparseA[a++]
-                add $t0, $t0, 1       # a++
-                add $t2, $t2, 1       # c++;
-    
-                j loopA 
-                
-    exit2:
-        loopB:
-            bge $t1, $t3, end
-                lw $t5, ($a1)         # load sparseB[b]
-                sw $t5, ($a2)         # sparseC[c++]=SparseB[b++]
-                add $t2, $t2, 1       # c++;
-                add $t1, $t1, 1       # b++;
+        lw $t4, 0($s0)        # load sparseA[a]
+        sw $t4, 0($s2)        # sparseC[c++]=SparseA[a++]
+        add $t0, $t0, 1       # a++
+        add $t2, $t2, 1       # c++;
+        j loop 
 
-                lw $t5, ($a1)         # load sparseB[b]
-                sw $t5, ($a2)         # sparseC[c++]=SparseB[b++]
-                add $t2, $t2, 1       # c++;
-                add $t1, $t1, 1       # b++;
-                j loopB     
+        else_if:
+        bgt $t5, $t4, else        # sparseA<sparseB
+        sw $t5, 0($s2)         # sparseC[c++]=SparseB[b++]
+        add $t2, $t2, 1       # c++;
+        add $t1, $t1, 1       # b++;
+        
+        add $s2, $s2, 4
+        add $s1, $s1, 4
+
+        lw $t5, 0($s1)         # load sparseB[b]
+        sw $t5, 0($s2)         # sparseC[c++]=SparseB[b++]
+        add $t2, $t2, 1       # c++;
+        add $t1, $t1, 1       # b++;
+        j loop 
+            
+        else:
+        sw $t4, 0($s2)             # sparseC[c++]=SparseA[a++]
+        add $t0, $t0, 1           # a++;
+        add $t2, $t2, 1           # c++;
+        add $t1, $t1, 1           # b++;
+        add $s2, $s2, 4
+        add $s1, $s1, 4
+        add $s0, $s0, 4
+
+        lw $t4, 0($s0)            # sparseA[i]
+        lw $t5, 0($s1)            # sparseB[i]
+        add $t6, $t4, $t5         # sparseC[c++]=SparseA[a++]+SparseB[b++]
+        sw $t6, 0($a2)
+            
+        add $t0, $t0, 1           # a++;
+        add $t1, $t1, 1           # b++;
+        add $t2, $t2, 1           # c++;
+        add $s2, $s2, 4
+        add $s1, $s1, 4
+        add $s0, $s0, 4
+
+        j loop
+
+
+    loopA:
+        bge $t0, $s3, loopB
+        lw $t4, 0($s0)         # load sparseA[a]
+        sw $t4, 0($s2)         # sparseC[c++]=SparseA[a++]
+        add $t0, $t0, 1       # a++
+        add $t2, $t2, 1       # c++;
+        add $s2, $s2, 4
+        add $s0, $s0, 4
+            
+        lw $t4, 0($s0)         # load sparseA[a]
+        sw $t4, 0($s2)         # sparseC[c++]=SparseA[a++]
+        add $t0, $t0, 1       # a++
+        add $t2, $t2, 1       # c++;
+        add $s2, $s2, 4
+        add $s0, $s0, 4
+
+        j loopA 
+            
+    loopB:
+        bge $t1, $t3, end
+        lw $t5, 0($s1)         # load sparseB[b]
+        sw $t5, 0($s2)         # sparseC[c++]=SparseB[b++]
+        add $t2, $t2, 1       # c++;
+        add $t1, $t1, 1       # b++;
+        add $s2, $s2, 4
+        add $s1, $s1, 4
+
+        lw $t5, 0($s1)         # load sparseB[b]
+        sw $t5, 0($s2)         # sparseC[c++]=SparseB[b++]
+        add $t2, $t2, 1       # c++;
+        add $t1, $t1, 1       # b++;
+        add $s2, $s2, 4
+        add $s1, $s1, 4
+        j loopB     
+        
              
     end:
+
+        add $sp, $sp, 4
         move $v0, $t2
         jr $ra
 
