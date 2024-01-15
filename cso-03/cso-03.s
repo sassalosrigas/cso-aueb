@@ -1,4 +1,19 @@
 .data
+
+    pin: .space 40
+    sparseA: .space 40
+    sparseB: .space 40
+    sparseC: .space 40
+    mikosA: .space 4
+    mikosB: .space 4
+    a: .space 4
+    bb: .space 4
+    c: .space 4
+    text1:   .asciiz "Position "
+    text2:  .asciiz " : \n"
+    in:     .space 4
+    i:      .space 4
+    Answer:     .space 4
     filler:     .asciiz "\n----------------------------------------"
     option1:    .asciiz "\n1. Read Array A"
     option2:    .asciiz "\n2. Read Array B"
@@ -10,37 +25,19 @@
     option8:    .asciiz "\n8. Display Sparse Array C"
     option0:    .asciiz "\n0. Exit"
     choice:     .asciiz "\nChoice? "
-    Answer:     .space 4
-
-    pin: .space 40
-    sparseA: .space 40
-    sparseB: .space 40
-    sparseC: .space 40
-    mikosA: .space 4
-    mikosB: .space 4
-    a: .space 4
-    bb: .space 4
-    c: .space 4
-
-    text1:   .asciiz "Position "
-    text2:  .asciiz " : \n"
-    in:     .space 4
-    i:      .space 4
-
+   
 .text
     .globl main
 
 main:
 
     jal readOption
-    move $a0,$v0  # returns the chosen option of the user
+    sw $v0,Answer # returns the chosen option of the user
+    lw $t0,Answer
 
-    # Switch case for different options
-    li $t0, 0    # Set $t0 to the chosen option
-    j switch_case
 
     # Option 1: Read Array A
-    lw $t0, Answer
+    
     beq $t0, 1, read_array
 
     # Option 2: Read Array B
@@ -75,11 +72,6 @@ main:
     lw $t0, Answer
     beq $t0, 0, exit_program
 
-switch_case:
-
-    # Handle invalid input
-    j main
-
 read_array:
 
     la $a0,pin
@@ -109,11 +101,6 @@ display_sparse:
     lw $a1, mikos
     jal printSparse
     j main
-
-exit_program:
-    # Exit program
-    li $v0, 10
-    syscall
 
 #-----------------------------------------------------------------------------------
 
@@ -170,15 +157,13 @@ readOption:
     li $v0,5    # read user input 
     syscall
 
-    sw $v0,Answer   # int Answer = in.nextInt();
-
     jr $ra  #return Answer
 
 #-----------------------------------------------------------------------------------
 
 readPin:    
 
-    la $t0,pin  # $t0 is base register of given pin
+    move $t0,$a0  # $t0 is base register of given pin
     
     li $t1,0
     sw $t1,i    # i = 0
@@ -220,7 +205,7 @@ readNext:
 #--------------this is executed if i >= 10---------------
 exitread:
 
-    move $v0,pin
+    la $v0,pin
     jr $ra
 
 #-----------------------------------------------------------------------------------
@@ -229,22 +214,22 @@ createSparse:
     lw $t0,i
     lw $t1,k
 
-    loop:
-        bgt $t0, $a0, exit
+    loop1:
+        bgt $t0, $a0, exit1
             lw $t2, 0($a0)
             lw $t3, 0($a1)
-            bnez $t2, else
+            bnez $t2, else1
                 add $t1, $t1, 1  # k++
                 sw $t0, 0($a1)   # sparse[k++]=i
                 add $t1, $t1, 1  # k++
                 sw $t2, 0($a1)   # sparse[k++] = pin[i]
-            else:
+            else1:
                 add $a0, $a0, 4  # next element in pin
                 add $t0, $t0, 1  # i++
-                j loop
+                j loop1
 
         
-    exit:
+    exit1:
         sw $t1,k
         move $v0, $t1
         jr $ra
@@ -264,7 +249,7 @@ addSparse:
     li $t1, 0 # b=0
     li $t2, 0 # c=0
 
-    loop:
+    loop2:
         bge $t0, $a3, loopA       # a>=mikosA
         bge $t1, $t3, loopA   # b>=mikosB
         lw $t4, 0($s0)    # sparseA[i]
@@ -281,10 +266,10 @@ addSparse:
         sw $t4, 0($s2)        # sparseC[c++]=SparseA[a++]
         add $t0, $t0, 1       # a++
         add $t2, $t2, 1       # c++;
-        j loop 
+        j loop2
 
         else_if:
-        bgt $t5, $t4, else        # sparseA<sparseB
+        bgt $t5, $t4, else2        # sparseA<sparseB
         sw $t5, 0($s2)         # sparseC[c++]=SparseB[b++]
         add $t2, $t2, 1       # c++;
         add $t1, $t1, 1       # b++;
@@ -296,9 +281,9 @@ addSparse:
         sw $t5, 0($s2)         # sparseC[c++]=SparseB[b++]
         add $t2, $t2, 1       # c++;
         add $t1, $t1, 1       # b++;
-        j loop 
+        j loop2
             
-        else:
+        else2:
         sw $t4, 0($s2)             # sparseC[c++]=SparseA[a++]
         add $t0, $t0, 1           # a++;
         add $t2, $t2, 1           # c++;
@@ -319,7 +304,7 @@ addSparse:
         add $s1, $s1, 4
         add $s0, $s0, 4
 
-        j loop
+        j loop2
 
 
     loopA:
@@ -370,8 +355,8 @@ printSparse:
     lw $t0, i               # i = 0
     move $t1, $a0           # t1 = sparse
 
-    loop:
-        bge $t0, $a1, exit  # if i >= mikos, exit loop
+    loop3:
+        bge $t0, $a1, exit2  # if i >= mikos, exit loop
 
         lw $t2, ($t1)       # t0 = sparse[i]
         lw $t3, 4($t1)      # t2 = sparse[i+1]
@@ -399,7 +384,7 @@ printSparse:
         addi $t1, $t1, 8    # t1 = t1 + 8
         addi $t0, $t0, 2    # i = i + 2
 
-        j loop
+        j loop3
 
     exit:
         jr $ra

@@ -4,15 +4,6 @@
 #          Rigas Sassalos (3220178)
 #----------------------------------------------------------------------------------------------------------
     .text
-    .globl main
-
-main:
-
-    jal readOption
-    move $a0,$v0    # returns the chosen option of the user
-
-
-
 
 readOption:
 
